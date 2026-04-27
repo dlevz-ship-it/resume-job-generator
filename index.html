@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Match Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-mark">RS</span>
+        <span>Resume Match Studio</span>
+      </div>
+      <a href="#app" class="nav-link">Open Generator</a>
+    </nav>
+
+    <section class="hero-content">
+      <p class="eyebrow">Resume builder meets job-description scanner</p>
+      <h1>Turn messy work experience into polished resume bullets.</h1>
+      <p class="hero-copy">
+        Paste a job description, describe your experience, and get stronger resume bullets plus a keyword match score you can explain on demo day.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#app">Start building</a>
+        <a class="button ghost" href="#how-it-works">How it works</a>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="stats-grid" aria-label="Project highlights">
+      <article>
+        <strong>2+</strong>
+        <span>User interactions</span>
+      </article>
+      <article>
+        <strong>JS</strong>
+        <span>Dynamic behavior</span>
+      </article>
+      <article>
+        <strong>100%</strong>
+        <span>Deployable static site</span>
+      </article>
+    </section>
+
+    <section id="app" class="app-shell">
+      <div class="section-heading">
+        <p class="eyebrow">The app</p>
+        <h2>Build your targeted resume bullets</h2>
+        <p>Fill in the form, generate bullets, check job keywords, and save a version in your browser.</p>
+      </div>
+
+      <div class="workspace">
+        <form class="input-panel" id="resumeForm">
+          <label>
+            Your target role
+            <input id="roleInput" type="text" placeholder="Example: Legal Assistant, Marketing Intern, Sales Associate" required />
+          </label>
+
+          <label>
+            Your experience
+            <textarea id="experienceInput" placeholder="Example: Managed client emails, organized files, scheduled appointments, prepared closing documents, answered phones" required></textarea>
+          </label>
+
+          <label>
+            Job description
+            <textarea id="jobInput" placeholder="Paste the job description here so the app can scan important keywords." required></textarea>
+          </label>
+
+          <div class="button-row">
+            <button type="submit" class="button primary">Generate Resume Bullets</button>
+            <button type="button" id="analyzeButton" class="button secondary">Analyze Job Match</button>
+            <button type="button" id="clearButton" class="button ghost dark">Clear</button>
+          </div>
+        </form>
+
+        <section class="output-panel" aria-live="polite">
+          <div class="score-card">
+            <div>
+              <p class="eyebrow">Match score</p>
+              <h3 id="scoreText">Waiting for input</h3>
+            </div>
+            <div class="score-ring" id="scoreRing">--</div>
+          </div>
+
+          <div class="output-card">
+            <div class="card-header">
+              <h3>Generated bullets</h3>
+              <button type="button" id="copyButton" class="small-button">Copy</button>
+            </div>
+            <ul id="bulletList" class="bullet-list">
+              <li>Your generated bullets will appear here.</li>
+            </ul>
+          </div>
+
+          <div class="output-card">
+            <div class="card-header">
+              <h3>Keyword analysis</h3>
+              <button type="button" id="saveButton" class="small-button">Save Result</button>
+            </div>
+            <div id="keywordOutput" class="keyword-box">
+              Add a job description and click “Analyze Job Match.”
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="info-section">
+      <div class="section-heading">
+        <p class="eyebrow">High-level technical explanation</p>
+        <h2>How it works</h2>
+      </div>
+      <div class="info-grid">
+        <article>
+          <h3>1. User input</h3>
+          <p>The user enters a target role, their experience, and a job description into the web form.</p>
+        </article>
+        <article>
+          <h3>2. JavaScript logic</h3>
+          <p>The app uses JavaScript to split the text, find repeated skill keywords, and create resume-style bullet points.</p>
+        </article>
+        <article>
+          <h3>3. Browser storage</h3>
+          <p>The Save Result button stores the latest generated bullets in localStorage, creating simple client-side data storage.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built for a final project demo. Ready to deploy on Cloudflare Pages, Vercel, or Netlify.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
