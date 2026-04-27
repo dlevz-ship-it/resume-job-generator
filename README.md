@@ -1,6 +1,6 @@
-# Resume Match Studio
+# HireMe Match Studio
 
-Resume Match Studio is a small web product that helps users turn their work experience into polished resume bullet points. Users can paste a job description, enter their own experience, generate resume bullets, and analyze which job keywords match their background.
+HireMe Match Studio is a small web product that helps users find job openings and improve their resume bullets. Users can enter a job title, location, and keywords to launch targeted searches on LinkedIn, ZipRecruiter, and Google Jobs. They can also paste a job description, enter their experience, generate multiple resume bullets, and analyze which job keywords match their background.
 
 ## Tech Stack
 
@@ -8,6 +8,7 @@ Resume Match Studio is a small web product that helps users turn their work expe
 - CSS
 - JavaScript
 - Browser localStorage for simple data saving
+- External job-search links generated from user input
 
 ## Live Site
 
@@ -17,7 +18,10 @@ Paste your deployed link here after publishing:
 
 ## Main Features
 
-- Resume bullet generator based on user input
+- Job search launcher for LinkedIn, ZipRecruiter, and Google Jobs
+- Remote job search button
+- Resume bullet generator with multiple bullet styles
+- User choice of 5, 7, or 10 resume bullets
 - Job description keyword scanner
 - Match score calculation
 - Copy button for generated bullets
@@ -26,15 +30,15 @@ Paste your deployed link here after publishing:
 
 ## How It Works
 
-The user fills out a form with a target role, work experience, and a job description. JavaScript reads the text, looks for common workplace keywords, generates resume-style bullet points, and calculates a match score based on how many job description keywords appear in the user's experience.
+The user fills out a job search form with a role, location, and optional keywords. JavaScript turns that input into search URLs and opens external job-search results. The user can also fill out the resume form with a target role, work experience, and job description. JavaScript scans the text for common workplace keywords, generates resume-style bullet points, and calculates a match score based on how many job description keywords appear in the user's experience.
 
 ## Technical Challenge
 
-One technical challenge was making the app generate bullets that sounded polished while still using the user's own words. The solution was to combine action verbs, the user's experience phrases, and keywords found in the job description.
+One technical challenge was making the app feel connected to real job boards while keeping it simple enough to deploy as a static website. Instead of using private job-board APIs, the app dynamically builds search links that send users to live LinkedIn, ZipRecruiter, and Google Jobs searches.
 
 ## One Thing I Would Improve
 
-In the future, I would connect the app to an AI API so the bullet points could be more personalized and specific to different industries.
+In the future, I would connect the app to a real jobs API or an AI API so it could pull job listings directly into the page and generate even more personalized bullet points.
 
 ## Deployment
 

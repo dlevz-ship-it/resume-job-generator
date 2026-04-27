@@ -2,6 +2,8 @@ const form = document.querySelector('#resumeForm');
 const roleInput = document.querySelector('#roleInput');
 const experienceInput = document.querySelector('#experienceInput');
 const jobInput = document.querySelector('#jobInput');
+const toneSelect = document.querySelector('#toneSelect');
+const bulletCountSelect = document.querySelector('#bulletCountSelect');
 const analyzeButton = document.querySelector('#analyzeButton');
 const clearButton = document.querySelector('#clearButton');
 const copyButton = document.querySelector('#copyButton');
@@ -11,18 +13,55 @@ const keywordOutput = document.querySelector('#keywordOutput');
 const scoreText = document.querySelector('#scoreText');
 const scoreRing = document.querySelector('#scoreRing');
 
+const jobSearchForm = document.querySelector('#jobSearchForm');
+const jobTitleInput = document.querySelector('#jobTitleInput');
+const locationInput = document.querySelector('#locationInput');
+const jobKeywordInput = document.querySelector('#jobKeywordInput');
+const jobResults = document.querySelector('#jobResults');
+const quickRemoteButton = document.querySelector('#quickRemoteButton');
+
 const skillKeywords = [
   'communication', 'leadership', 'research', 'writing', 'customer service',
   'organization', 'scheduling', 'data', 'analysis', 'sales', 'marketing',
   'legal', 'filing', 'client', 'project management', 'teamwork', 'microsoft',
   'excel', 'social media', 'problem solving', 'attention to detail', 'operations',
-  'billing', 'records', 'training', 'inventory', 'administrative'
+  'billing', 'records', 'training', 'inventory', 'administrative', 'crm',
+  'case management', 'contracts', 'deadlines', 'reporting', 'customer', 'office',
+  'documentation', 'compliance', 'calendar', 'coordination', 'database'
 ];
 
 const actionVerbs = [
   'Coordinated', 'Managed', 'Improved', 'Supported', 'Organized', 'Prepared',
-  'Streamlined', 'Assisted', 'Communicated', 'Maintained'
+  'Streamlined', 'Assisted', 'Communicated', 'Maintained', 'Tracked', 'Reviewed',
+  'Updated', 'Built', 'Researched', 'Monitored'
 ];
+
+const bulletOpeners = {
+  professional: [
+    'to support daily operations and strengthen',
+    'while maintaining accuracy across',
+    'to improve workflow consistency and support',
+    'while communicating clearly with internal and external stakeholders'
+  ],
+  impact: [
+    'to reduce friction, improve follow-through, and strengthen',
+    'to create a more organized process for',
+    'to increase efficiency and support measurable progress in',
+    'to turn scattered information into usable action for'
+  ],
+  entry: [
+    'while building practical experience in',
+    'to support team goals and develop stronger skills in',
+    'while learning workplace systems related to',
+    'to contribute reliable support for'
+  ],
+  leadership: [
+    'by guiding priorities, clarifying next steps, and supporting',
+    'while coordinating people, deadlines, and details related to',
+    'to keep projects moving and strengthen accountability around',
+    'by organizing responsibilities and improving communication across'
+  ]
+};
 
 function cleanText(text) {
   return text.trim().replace(/\s+/g, ' ');
@@ -40,25 +79,82 @@ function findKeywords(text) {
   return skillKeywords.filter(keyword => lowerText.includes(keyword));
 }
 
+function makeSearchQuery() {
+  const title = cleanText(jobTitleInput.value);
+  const location = cleanText(locationInput.value);
+  const extras = cleanText(jobKeywordInput.value);
+  return { title, location, extras, combined: [title, extras].filter(Boolean).join(' ') };
+}
+
+function buildJobLinks(remoteOverride = false) {
+  const { title, location, extras, combined } = makeSearchQuery();
+  const finalLocation = remoteOverride ? 'Remote' : location;
+
+  if (!title || !finalLocation) {
+    jobResults.innerHTML = '<p class="placeholder">Add a role and location first.</p>';
+    return;
+  }
+
+  const encodedTitle = encodeURIComponent(combined || title);
+  const encodedLocation = encodeURIComponent(finalLocation);
+  const googleQuery = encodeURIComponent(`${combined || title} jobs ${finalLocation}`);
+
+  const links = [
+    {
+      name: 'Search LinkedIn Jobs',
+      note: 'Opens a LinkedIn search using your title and location.',
+      url: `https://www.linkedin.com/jobs/search/?keywords=${encodedTitle}&location=${encodedLocation}`
+    },
+    {
+      name: 'Search ZipRecruiter',
+      note: 'Opens a ZipRecruiter search using your title and location.',
+      url: `https://www.ziprecruiter.com/jobs-search?search=${encodedTitle}&location=${encodedLocation}`
+    },
+    {
+      name: 'Search Google Jobs',
+      note: 'Useful backup search for live postings across job boards.',
+      url: `https://www.google.com/search?q=${googleQuery}`
+    }
+  ];
+
+  jobResults.innerHTML = links.map(link => `
+    <article class="job-card">
+      <h3>${link.name}</h3>
+      <p>${link.note}</p>
+      <a class="button secondary" href="${link.url}" target="_blank" rel="noopener noreferrer">Open Search</a>
+    </article>
+  `).join('');
+
+  localStorage.setItem('hireMeJobSearch', JSON.stringify({ title, location: finalLocation, extras }));
+}
+
 function generateBullets() {
   const role = cleanText(roleInput.value) || 'target role';
   const experienceItems = splitExperience(experienceInput.value);
   const jobKeywords = findKeywords(jobInput.value);
-  const selectedKeywords = jobKeywords.length ? jobKeywords.slice(0, 4) : ['accuracy', 'communication', 'organization'];
+  const selectedKeywords = jobKeywords.length ? jobKeywords : ['accuracy', 'communication', 'organization', 'workflow'];
+  const tone = toneSelect.value;
+  const desiredCount = Number(bulletCountSelect.value);
+  const connectors = bulletOpeners[tone] || bulletOpeners.professional;
 
   if (!experienceItems.length) {
     bulletList.innerHTML = '<li>Please add your experience first.</li>';
     return [];
   }
 
-  const bullets = experienceItems.slice(0, 5).map((item, index) => {
+  const bullets = [];
+  for (let index = 0; index < desiredCount; index += 1) {
+    const item = experienceItems[index % experienceItems.length];
     const verb = actionVerbs[index % actionVerbs.length];
     const keyword = selectedKeywords[index % selectedKeywords.length];
-    return `${verb} ${item.toLowerCase()} to strengthen ${keyword} and support success in a ${role} position.`;
-  });
+    const connector = connectors[index % connectors.length];
+    const detail = item.charAt(0).toLowerCase() + item.slice(1);
+    bullets.push(`${verb} ${detail} ${connector} ${keyword} in a ${role} role.`);
+  }
 
-  bulletList.innerHTML = bullets.map(bullet => `<li>${bullet}</li>`).join('');
-  return bullets;
+  const uniqueBullets = [...new Set(bullets)];
+  bulletList.innerHTML = uniqueBullets.map(bullet => `<li>${bullet}</li>`).join('');
+  return uniqueBullets;
 }
 
 function analyzeMatch() {
@@ -89,6 +185,16 @@ function analyzeMatch() {
 
   keywordOutput.innerHTML = matchedHTML + missingHTML;
 }
+
+jobSearchForm.addEventListener('submit', event => {
+  event.preventDefault();
+  buildJobLinks(false);
+});
+
+quickRemoteButton.addEventListener('click', () => {
+  if (!locationInput.value.trim()) locationInput.value = 'Remote';
+  buildJobLinks(true);
+});
 
 form.addEventListener('submit', event => {
   event.preventDefault();
@@ -123,6 +229,8 @@ saveButton.addEventListener('click', () => {
     role: roleInput.value,
     experience: experienceInput.value,
     job: jobInput.value,
+    tone: toneSelect.value,
+    count: bulletCountSelect.value,
     bullets: [...bulletList.querySelectorAll('li')].map(li => li.textContent),
     savedAt: new Date().toLocaleString()
   };
@@ -133,6 +241,19 @@ saveButton.addEventListener('click', () => {
 
 window.addEventListener('load', () => {
   const saved = localStorage.getItem('resumeMatchStudioSave');
+  const savedSearch = localStorage.getItem('hireMeJobSearch');
+
+  if (savedSearch) {
+    try {
+      const data = JSON.parse(savedSearch);
+      jobTitleInput.value = data.title || '';
+      locationInput.value = data.location || '';
+      jobKeywordInput.value = data.extras || '';
+    } catch (error) {
+      localStorage.removeItem('hireMeJobSearch');
+    }
+  }
+
   if (!saved) return;
 
   try {
@@ -140,6 +261,8 @@ window.addEventListener('load', () => {
     if (data.role) roleInput.value = data.role;
     if (data.experience) experienceInput.value = data.experience;
     if (data.job) jobInput.value = data.job;
+    if (data.tone) toneSelect.value = data.tone;
+    if (data.count) bulletCountSelect.value = data.count;
     if (data.bullets?.length) {
       bulletList.innerHTML = data.bullets.map(bullet => `<li>${bullet}</li>`).join('');
     }

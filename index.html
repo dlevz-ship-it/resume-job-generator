@@ -3,31 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resume Match Studio</title>
+  <title>HireMe Match Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="hero">
     <nav class="nav">
       <div class="brand">
-        <span class="brand-mark">RS</span>
-        <span>Resume Match Studio</span>
+        <span class="brand-mark">HM</span>
+        <span>HireMe Match Studio</span>
       </div>
-      <a href="#app" class="nav-link">Open Generator</a>
+      <div class="nav-actions">
+        <a href="#job-search" class="nav-link">Find Jobs</a>
+        <a href="#app" class="nav-link">Resume Bullets</a>
+      </div>
     </nav>
 
     <section class="hero-content">
-      <p class="eyebrow">Resume builder meets job-description scanner</p>
-      <h1>Turn messy work experience into polished resume bullets.</h1>
+      <p class="eyebrow">Resume builder + job search launcher</p>
+      <h1>Find openings and turn your experience into resume bullets.</h1>
       <p class="hero-copy">
-        Paste a job description, describe your experience, and get stronger resume bullets plus a keyword match score you can explain on demo day.
+        Search LinkedIn and ZipRecruiter with one form, scan a job description for keywords, and generate multiple polished resume bullets you can copy into a resume.
       </p>
       <div class="hero-actions">
-        <a class="button primary" href="#app">Start building</a>
-        <a class="button ghost" href="#how-it-works">How it works</a>
+        <a class="button primary" href="#job-search">Start job search</a>
+        <a class="button ghost" href="#app">Build bullets</a>
       </div>
     </section>
   </header>
@@ -35,7 +38,7 @@
   <main>
     <section class="stats-grid" aria-label="Project highlights">
       <article>
-        <strong>2+</strong>
+        <strong>4+</strong>
         <span>User interactions</span>
       </article>
       <article>
@@ -43,16 +46,47 @@
         <span>Dynamic behavior</span>
       </article>
       <article>
-        <strong>100%</strong>
-        <span>Deployable static site</span>
+        <strong>Links</strong>
+        <span>LinkedIn + ZipRecruiter search</span>
       </article>
+    </section>
+
+    <section id="job-search" class="app-shell compact-shell">
+      <div class="section-heading">
+        <p class="eyebrow">Job finder</p>
+        <h2>Launch targeted job searches</h2>
+        <p>Enter a role, location, and optional keywords. The app builds search links for LinkedIn, ZipRecruiter, and Google Jobs.</p>
+      </div>
+
+      <form class="job-form" id="jobSearchForm">
+        <label>
+          Job title or role
+          <input id="jobTitleInput" type="text" placeholder="Example: paralegal, legal assistant, marketing intern" required />
+        </label>
+        <label>
+          Location
+          <input id="locationInput" type="text" placeholder="Example: Brooklyn, NY or Remote" required />
+        </label>
+        <label>
+          Extra keywords
+          <input id="jobKeywordInput" type="text" placeholder="Example: entry level, real estate, internship, hybrid" />
+        </label>
+        <div class="button-row">
+          <button type="submit" class="button primary">Create Job Search Links</button>
+          <button type="button" id="quickRemoteButton" class="button secondary">Remote Search</button>
+        </div>
+      </form>
+
+      <div class="job-results" id="jobResults" aria-live="polite">
+        <p class="placeholder">Your LinkedIn, ZipRecruiter, and Google Jobs search buttons will appear here.</p>
+      </div>
     </section>
 
     <section id="app" class="app-shell">
       <div class="section-heading">
-        <p class="eyebrow">The app</p>
-        <h2>Build your targeted resume bullets</h2>
-        <p>Fill in the form, generate bullets, check job keywords, and save a version in your browser.</p>
+        <p class="eyebrow">Resume studio</p>
+        <h2>Generate stronger resume bullets</h2>
+        <p>Choose a bullet style, paste your experience, and add a job description so the app can tailor the output.</p>
       </div>
 
       <div class="workspace">
@@ -71,6 +105,26 @@
             Job description
             <textarea id="jobInput" placeholder="Paste the job description here so the app can scan important keywords." required></textarea>
           </label>
+
+          <div class="inline-controls">
+            <label>
+              Bullet style
+              <select id="toneSelect">
+                <option value="professional">Professional</option>
+                <option value="impact">Impact-focused</option>
+                <option value="entry">Entry-level</option>
+                <option value="leadership">Leadership</option>
+              </select>
+            </label>
+            <label>
+              Number of bullets
+              <select id="bulletCountSelect">
+                <option value="5">5 bullets</option>
+                <option value="7" selected>7 bullets</option>
+                <option value="10">10 bullets</option>
+              </select>
+            </label>
+          </div>
 
           <div class="button-row">
             <button type="submit" class="button primary">Generate Resume Bullets</button>
@@ -119,11 +173,11 @@
       <div class="info-grid">
         <article>
           <h3>1. User input</h3>
-          <p>The user enters a target role, their experience, and a job description into the web form.</p>
+          <p>The user enters a role, location, experience, and a job description into the web forms.</p>
         </article>
         <article>
           <h3>2. JavaScript logic</h3>
-          <p>The app uses JavaScript to split the text, find repeated skill keywords, and create resume-style bullet points.</p>
+          <p>The app builds job-search URLs, scans for skill keywords, creates tailored resume bullets, and calculates a match score.</p>
         </article>
         <article>
           <h3>3. Browser storage</h3>
@@ -134,7 +188,7 @@
   </main>
 
   <footer>
-    <p>Built for a final project demo. Ready to deploy on Cloudflare Pages, Vercel, or Netlify.</p>
+    <p>Built for a final project demo. Deployable on Cloudflare Pages, Vercel, or Netlify.</p>
   </footer>
 
   <script src="script.js"></script>
